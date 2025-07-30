@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard - CrowdQueue</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+        h2 { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #ccc; text-align: left; }
+        th { background: #f0f0f0; }
+        a.btn { padding: 6px 12px; margin-right: 5px; text-decoration: none; border: 1px solid #333; border-radius: 4px; }
+        .btn-serve { background: #4CAF50; color: white; }
+        .btn-skip { background: #FF9800; color: white; }
+        .btn-remove { background: #f44336; color: white; }
+        .actions { white-space: nowrap; }
+        form.inline { display: inline; }
+    </style>
+</head>
+<body>
+
+    <h2>🛠 Admin Dashboard</h2>
+
+    <!-- 🔍 Search -->
+    <form method="get" action="{% url 'search_queue' %}">
+        <input type="text" name="q" placeholder="Search by name or phone" value="{{ search_query|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <br><br>
+
+    <!-- 📋 Queue Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Queue No.</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in queue %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.number }}</td>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.phone }}</td>
+                <td>{{ entry.status }}</td>
+                <td class="actions">
+                    <a class="btn btn-serve" href="{% url 'queue_action' entry.id 'serve' %}">Serve</a>
+                    <a class="btn btn-skip" href="{% url 'queue_action' entry.id 'skip' %}">Skip</a>
+                    <a class="btn btn-remove" href="{% url 'queue_action' entry.id 'remove' %}">Remove</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No entries in the queue.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <!-- 🔁 Reset and Toggle -->
+    <form method="post" action="{% url 'reset_queue' %}" class="inline">{% csrf_token %}
+        <button type="submit">🔁 Reset Queue</button>
+    </form>
+
+    <form method="post" action="{% url 'toggle_queue' %}" class="inline">{% csrf_token %}
+        <button type="submit">🚪 {% if status.is_open %} Close Queue {% else %} Open Queue {% endif %}</button>
+    </form>
+
+</body>
+</html>
