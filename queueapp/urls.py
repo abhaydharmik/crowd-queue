@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
@@ -10,4 +11,5 @@ urlpatterns = [
     path('dashboard/search/', views.search_queue, name='search_queue'),
     path('dashboard/reset/', views.reset_queue, name='reset_queue'),
     path('dashboard/close/', views.toggle_queue_status, name='toggle_queue'),
+       
 ]

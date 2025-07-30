@@ -1,9 +1,7 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
 from .models import QueueEntry
 from django.http import JsonResponse
 from .models import QueueStatus 
-from django.db.models import Q
-
 
 # Create your views here.
 def home(request):
@@ -25,6 +23,10 @@ def get_queue_data(request):
     entries = QueueEntry.objects.filter(status='waiting').order_by('number')
     data = [{"number": e.number, "name": e.name} for e in entries]
     return JsonResponse({"queue": data})
+
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from .models import QueueStatus  # you'll need to create this model
 
 # 👨‍💼 Admin dashboard
 def admin_dashboard(request):
